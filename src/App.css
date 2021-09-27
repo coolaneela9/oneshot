@@ -57,3 +57,34 @@
   align-items: center;
   justify-content: center;
 }
+
+.card-body {
+  height: 300px;
+  overflow: auto;
+}
+
+.candidate-img {
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+/* .sidenav {
+  padding-top: 20px;
+  min-height: 100vh;
+  text-align: center;
+  background-color: rgb(235, 235, 235);
+  margin-left: 0;
+} */
+
+.img-container {
+  background-image: url(./app-background.jpeg);
+  height: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.sidebar-col {
+  max-width: 230px;
+  z-index: 999;
+}

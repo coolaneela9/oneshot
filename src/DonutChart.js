@@ -20,12 +20,47 @@ const Div = Styled.div`
   }
 `;
 
+const Num = Styled.div`
+    font-size: 16px;
+    display: inline-flex;
+    width: 200px;
+`;
+const Text = Styled.div`
+    font-size: 16px;
+    margin-left: 20px;
+    font-size: 16px;
+    display: inline-flex;
+    justify-content: center;
+`;
+
+const Marker = Styled.span`
+    border: solid 4px;
+    border-color: #ee4f3e;
+    width: 12px;
+    height: 8px;
+    border-radius: 20px;
+    margin-top: 6px;
+    display: inline-block;
+`;
+
+const LegendWrapper = Styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 10px;
+    .legend-wrapper {
+        display: flex;
+        padding: 4px;
+    }
+`;
+
 class DonutChart extends React.Component {
   static propTypes = {
     data: PropTypes.array,
     title: PropTypes.string,
     seriesData: PropTypes.array,
     sum: PropTypes.number,
+    colors: PropTypes.array,
   };
   constructor(props) {
     super(props);
@@ -48,10 +83,14 @@ class DonutChart extends React.Component {
   }
 
   renderChart() {
-    const { data, title, seriesData } = this.props;
+    const { data, title, seriesData, colors } = this.props;
     if (_.isEmpty(data)) {
       return null;
     }
+
+    Highcharts.setOptions({
+      colors: colors,
+    });
 
     // Create the chart
     Highcharts.chart(this.id, {
@@ -134,6 +173,7 @@ class DonutChart extends React.Component {
                 ? Highcharts.numberFormat(this.percentage, 1, ".", ",") + "%"
                 : null;
             },
+
             distance: -15,
             style: {
               textOutline: 0,
@@ -146,6 +186,7 @@ class DonutChart extends React.Component {
           states: {
             hover: {
               opacity: "1",
+              color: colors,
             },
             inactive: {
               opacity: "1",
@@ -165,10 +206,24 @@ class DonutChart extends React.Component {
   }
 
   render() {
+    const { data, sum, colors } = this.props;
     return (
-      <Div>
-        <div id={this.id} />
-      </Div>
+      <React.Fragment>
+        <Div>
+          <div id={this.id} />
+        </Div>
+        <LegendWrapper>
+          {_.map(data, (key, i) => (
+            <div className="legend-wrapper" key={i}>
+              <Marker style={{ borderColor: colors[i] }} />
+              <span className="d-flex ml-2">
+                <Num>{key["name"]}</Num>
+                <Text>{Math.round((key["count"] * 100) / sum) + "%"}</Text>
+              </span>
+            </div>
+          ))}
+        </LegendWrapper>
+      </React.Fragment>
     );
   }
 }
