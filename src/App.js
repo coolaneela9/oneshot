@@ -4,6 +4,7 @@ import Listing from "./Listing";
 import chanakyaImg from "./chanakya.jpeg";
 import SideBar from "./SideBar";
 import { Row, Col } from "react-bootstrap";
+import StudentListing from "./StudentListing";
 
 class App extends React.Component {
   render() {
@@ -42,6 +43,7 @@ class App extends React.Component {
         </div> */}
         <div className="img-container">
           <Listing />
+          <StudentListing />
         </div>
       </div>
     );

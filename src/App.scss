@@ -80,8 +80,8 @@
   /* background-image: url(./app-background.jpeg); */
   background-image: linear-gradient(
     to bottom right,
-    #cdaeb1,
-    rgb(13 110 253 / 25%)
+    #bf3974,
+    rgba(13, 110, 253, 0.25)
   );
   height: calc(100% - 80px);
   background-position: center;
@@ -98,14 +98,27 @@
   margin-top: 5px;
   font-size: 20px;
 }
+// .close-btn {
+//   background: #000;
+//   border: 0;
+//   margin-top: 5px;
+//   display: flex;
+//   float: right;
+// }
 .close-btn {
-  background: #000;
+  background: #ededed;
   border: 0;
   margin-top: 5px;
-  display: flex;
-  float: right;
+  line-height: 3px;
+  border-radius: 4px;
 }
 
 .listing-modal .modal-dialog {
   min-width: 100vw;
+}
+
+.icon-cross {
+  cursor: pointer;
+  font-size: 12px;
+  color: rgb(119, 119, 119);
 }

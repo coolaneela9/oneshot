@@ -24,3 +24,21 @@ export const getCollegesByState = (location) => {
     })
     .catch((err) => console.log(err, "err"));
 };
+
+export const getCollegeById = (schoolId) => {
+  return fetch(`http://localhost:8000/college/${schoolId}`)
+    .then((res) => res.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => console.log(err, "err"));
+};
+
+export const getCollegesByCourseName = (courseName) => {
+  return fetch(`http://localhost:8000/colleges/getByCourse/${courseName}`)
+    .then((res) => res.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => console.log(err, "err"));
+};

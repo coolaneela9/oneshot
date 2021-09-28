@@ -15,14 +15,17 @@ const StyledTable = Styled.table`
     background-color: #FAFAFA;
     tr, th {
       box-shadow: none !important;
-      padding: 5px 10px;
-      color: #444444;
+      padding: 5px 20px;
+      color: #fdf5f5;
       font-weight: 400;
-      font-size: 13px;
+      font-size: 17px;
+      background-color: #89458b;
+      font-family: emoji;
     }
   }
   td {
     padding: 20px;
+    font-family: emoji;
   }
   tr {
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
@@ -32,7 +35,6 @@ const StyledTable = Styled.table`
 `;
 
 const collegeConfig = [
-  "Id",
   "Name",
   "Year founded",
   "City",
@@ -72,11 +74,10 @@ export class Listing extends React.Component {
     super(props);
     this.state = {
       colleges: [],
-      filterColleges: [],
     };
   }
   componentDidMount() {
-    const { colleges, filterColleges } = this.state;
+    const { colleges } = this.state;
 
     // For showing all the colleges
     getColleges().then((res) => {
@@ -87,9 +88,8 @@ export class Listing extends React.Component {
   }
 
   render() {
-    const { colleges, filterColleges } = this.state;
+    const { colleges } = this.state;
     const uniqueStates = _.uniq(_.map(colleges, "state"));
-    const uniqueCourses = _.uniq(_.map(this.colleges, "courses"));
     let collegeChartData = [];
     let collegeSeriesData = [];
 
@@ -137,7 +137,6 @@ export class Listing extends React.Component {
                 <tbody>
                   {_.map(colleges, (college) => (
                     <tr key={college._id}>
-                      <td>{college._id}</td>
                       <td>{college.name}</td>
                       <td>{college.yearFounded}</td>
                       <td>{college.city}</td>
