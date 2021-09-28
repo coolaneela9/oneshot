@@ -77,7 +77,12 @@
 } */
 
 .img-container {
-  background-image: url(./app-background.jpeg);
+  /* background-image: url(./app-background.jpeg); */
+  background-image: linear-gradient(
+    to bottom right,
+    #cdaeb1,
+    rgb(13 110 253 / 25%)
+  );
   height: calc(100% - 80px);
   background-position: center;
   background-repeat: no-repeat;

@@ -15,13 +15,16 @@ const StyledTable = Styled.table`
     tr, th {
       box-shadow: none !important;
       padding: 5px 20px;
-      color: #444444;
+      color: #fdf5f5;
       font-weight: 400;
-      font-size: 13px;
+      font-size: 17px;
+      background-color: #89458b;
+      font-family: emoji;
     }
   }
   td {
     padding: 20px;
+    font-family: emoji;
   }
   tr {
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.08);
@@ -46,7 +49,7 @@ const colStyles = {
     width: "30%",
   },
   yearFounded: {
-    width: "10%",
+    width: "15%",
     textAlign: "left",
   },
   city: {
@@ -68,8 +71,7 @@ const colStyles = {
   },
 };
 
-export const ChartListing1 = ({ name }) => {
-  console.log(name, "name");
+export const ChartListing = ({ name }) => {
   const [collegesByState, setCollegesByState] = useState([]);
   useEffect(() => {
     const fetchList = () => {
@@ -122,73 +124,5 @@ export const ChartListing1 = ({ name }) => {
     </div>
   );
 };
-export class ChartListing extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      collegesByState: [],
-    };
-  }
-  componentDidMount() {
-    const { collegesByState } = this.state;
-    const { name } = this.props;
-
-    // For getting particular colleges by state
-    getCollegesByState(name).then((res) => {
-      this.setState({
-        collegesByState:
-          res && res.length > 0 ? collegesByState.concat(res) : [],
-      });
-    });
-  }
-
-  render() {
-    const { collegesByState } = this.state;
-    const { name } = this.props;
-    console.log(`collegesByState`, collegesByState);
-
-    return (
-      <div className="dashboard-listing">
-        <Card className="dashboard-card">
-          <Card.Header>{`Listing of Colleges by State ${name}`}</Card.Header>
-          <Card.Body>
-            <div className="dashboard-events-table">
-              <StyledTable className="w-100">
-                <thead className="thead-dark">
-                  <tr>
-                    {_.map(collegeConfig, (config) => (
-                      <th>{config}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {_.map(collegesByState, (college) => (
-                    <tr>
-                      <td style={colStyles.name}>{college.name}</td>
-                      <td style={colStyles.yearFounded}>
-                        {college.yearFounded}
-                      </td>
-                      <td style={colStyles.city}>{college.city}</td>
-                      <td style={colStyles.state}>{college.state}</td>
-                      <td style={colStyles.country}>{college.country}</td>
-                      <td style={colStyles.studentsCount}>
-                        {college.noOfStudents}
-                      </td>
-                      <td style={colStyles.courses}>
-                        {_.map(college.courses, (course) => (
-                          <li>{course}</li>
-                        ))}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </StyledTable>
-            </div>
-          </Card.Body>
-        </Card>
-      </div>
-    );
-  }
-}
 
 export default ChartListing;

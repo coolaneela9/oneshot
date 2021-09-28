@@ -237,6 +237,7 @@ class DonutChart extends React.Component {
     const { isOpenListingPopup, name } = this.state;
     return (
       <React.Fragment>
+        <div>Chart</div>
         <Div>
           <div id={this.id} />
         </Div>

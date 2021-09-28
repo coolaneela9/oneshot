@@ -1,5 +1,5 @@
 import React from "react";
-import "./App.css";
+import "./App.scss";
 import Listing from "./Listing";
 import chanakyaImg from "./chanakya.jpeg";
 import SideBar from "./SideBar";
@@ -8,7 +8,7 @@ import { Row, Col } from "react-bootstrap";
 class App extends React.Component {
   render() {
     return (
-      <div style={{ height: "100vh" }}>
+      <div>
         <nav className="navBar">
           <div className="h4" style={{ padding: "20px" }}>
             Oneshot

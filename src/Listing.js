@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import _ from "lodash";
 import Styled from "styled-components";
@@ -56,6 +56,17 @@ const colors = [
   "#FF9ADC",
 ];
 
+// export const CollegeListing = () => {
+//   const [colleges, setColleges] = useState([]);
+//   useEffect(() => {
+//     const fetchCollegeList = () => {
+//       getColleges().then((res) => {
+//         setColleges(colleges.concat(res));
+//       });
+//     };
+//     fetchCollegeList();
+//   });
+// };
 export class Listing extends React.Component {
   constructor(props) {
     super(props);
@@ -110,6 +121,7 @@ export class Listing extends React.Component {
 
     return (
       <div className="dashboard-listing">
+        <div>Showing the total list of the colleges here:</div>
         <Card className="dashboard-card">
           <Card.Header>Listing of Colleges</Card.Header>
           <Card.Body>
