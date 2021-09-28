@@ -17,7 +17,7 @@ export const getStudents = () => {
 };
 
 export const getCollegesByState = (location) => {
-  return fetch(`http://localhost:8000/colleges/getByLocation/:${location}`)
+  return fetch(`http://localhost:8000/colleges/getByLocation/${location}`)
     .then((res) => res.json())
     .then((data) => {
       return data;

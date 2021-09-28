@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import _ from "lodash";
 import Highcharts from "highcharts";
 import Styled from "styled-components";
+import ListingModal from "./ListingModal";
 require("highcharts-no-data-to-display")(Highcharts);
 
 const Div = Styled.div`
@@ -15,8 +16,12 @@ const Div = Styled.div`
   .highcharts-tooltip span {
     z-index: 99999 !important;
   }
-  .highcharts-title span {
+  span.highcharts-title  {
+    top: 110px;
     z-index: 1 !important;
+  }
+  svg.highcharts-root {
+    border-radius:6px;
   }
 `;
 
@@ -39,7 +44,8 @@ const Marker = Styled.span`
     width: 12px;
     height: 8px;
     border-radius: 20px;
-    margin-top: 6px;
+    margin-top: 8px;
+    margin-right: 10px;
     display: inline-block;
 `;
 
@@ -64,8 +70,13 @@ class DonutChart extends React.Component {
   };
   constructor(props) {
     super(props);
+    this.state = {
+      isOpenListingPopup: false,
+      name: undefined,
+    };
 
     this.id = `donut_chart__${Math.floor(Math.random() * 1000)}`;
+    this.handleCollegePopup = this.handleCollegePopup.bind(this);
   }
 
   componentDidMount() {
@@ -81,6 +92,13 @@ class DonutChart extends React.Component {
       }
     }
   }
+
+  handleCollegePopup = (name) => {
+    this.setState({
+      isOpenListingPopup: !this.state.isOpenListingPopup,
+      name: name,
+    });
+  };
 
   renderChart() {
     const { data, title, seriesData, colors } = this.props;
@@ -173,7 +191,6 @@ class DonutChart extends React.Component {
                 ? Highcharts.numberFormat(this.percentage, 1, ".", ",") + "%"
                 : null;
             },
-
             distance: -15,
             style: {
               textOutline: 0,
@@ -193,12 +210,22 @@ class DonutChart extends React.Component {
             },
           },
         },
+        // point: {
+        //   events: {
+        //     click: function () {
+        //       console.log(this.y);
+        //     },
+        //   },
+        // },
       },
       series: [
         {
           type: "pie",
           innerSize: "60%",
           data: seriesData,
+          onClick: function () {
+            console.log(this.y);
+          },
         },
       ],
       credits: false,
@@ -207,6 +234,7 @@ class DonutChart extends React.Component {
 
   render() {
     const { data, sum, colors } = this.props;
+    const { isOpenListingPopup, name } = this.state;
     return (
       <React.Fragment>
         <Div>
@@ -217,9 +245,16 @@ class DonutChart extends React.Component {
             <div className="legend-wrapper" key={i}>
               <Marker style={{ borderColor: colors[i] }} />
               <span className="d-flex ml-2">
-                <Num>{key["name"]}</Num>
+                <Num onClick={() => this.handleCollegePopup(key["name"])}>
+                  {key["name"]}
+                </Num>
                 <Text>{Math.round((key["count"] * 100) / sum) + "%"}</Text>
               </span>
+              <ListingModal
+                show={isOpenListingPopup}
+                name={name}
+                handleClose={this.handleCollegePopup}
+              />
             </div>
           ))}
         </LegendWrapper>

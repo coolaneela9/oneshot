@@ -56,95 +56,58 @@ const colors = [
   "#FF9ADC",
 ];
 
-const seriesData = [30, 30, 40, 50, 50];
-
-const collegeData = [
-  {
-    id: 1,
-    name: "aneela",
-    year_founded: "1999",
-    city: "tirupathi",
-    state: "karnataka",
-    country: "india",
-    students_count: 50,
-    courses: ["cs", "biotech", "chem"],
-  },
-  {
-    id: 2,
-    name: "aneela",
-    year_founded: "1999",
-    city: "tirupathi",
-    state: "telangana",
-    country: "india",
-    students_count: 50,
-    courses: ["cs", "aero"],
-  },
-  {
-    id: 3,
-    name: "aneela",
-    year_founded: "1999",
-    city: "tirupathi",
-    state: "kerala",
-    country: "india",
-    students_count: 50,
-    courses: ["cs", "mech", "aero"],
-  },
-  {
-    id: 4,
-    name: "aneela",
-    year_founded: "1999",
-    city: "tirupathi",
-    state: "bhu",
-    country: "india",
-    students_count: 50,
-    courses: ["cs", "medicine"],
-  },
-  {
-    id: 5,
-    name: "aneela",
-    year_founded: "1999",
-    city: "tirupathi",
-    state: "patna",
-    country: "india",
-    students_count: 50,
-    courses: ["cs", "electronics"],
-  },
-];
-
 export class Listing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       colleges: [],
+      filterColleges: [],
     };
-    this.stateCount = 0;
-    this.fetchCollegePromise = undefined;
   }
   componentDidMount() {
-    const { colleges } = this.state;
-    const uniqueStates = _.uniq(_.map(colleges, "state"));
+    const { colleges, filterColleges } = this.state;
+
+    // For showing all the colleges
     getColleges().then((res) => {
       this.setState({
-        colleges: [...res],
+        colleges: colleges.concat(res),
       });
     });
   }
 
   render() {
-    const { colleges } = this.state;
+    const { colleges, filterColleges } = this.state;
     const uniqueStates = _.uniq(_.map(colleges, "state"));
     const uniqueCourses = _.uniq(_.map(this.colleges, "courses"));
     let collegeChartData = [];
     let collegeSeriesData = [];
+
+    //have to use the api in the count part
     for (let i = 0; i < uniqueStates.length; i++) {
+      // let collegeData = {
+      //   name: uniqueStates[i],
+      //   count: 30,
+      // };
+      // getCollegesByState(uniqueStates[i]).then((data) => {
+      //   console.log(data, "data");
+      //   collegeData.count = data.length;
+      // });
       collegeChartData.push({
         name: uniqueStates[i],
         count: "30",
+        // count: await getCollegesByState(uniqueStates[i]),
+        // // .then((data) => {
+        // //   console.log(`data.length`, data.length);
+        // //   return data.length;
+        // // }),
       });
     }
+
     for (let i = 0; i < uniqueStates.length; i++) {
       collegeSeriesData.push([uniqueStates[i], 30]);
     }
+    console.log(collegeChartData, "collegeChartData");
+
     return (
       <div className="dashboard-listing">
         <Card className="dashboard-card">
@@ -161,7 +124,7 @@ export class Listing extends React.Component {
                 </thead>
                 <tbody>
                   {_.map(colleges, (college) => (
-                    <tr>
+                    <tr key={college._id}>
                       <td>{college._id}</td>
                       <td>{college.name}</td>
                       <td>{college.yearFounded}</td>
@@ -186,7 +149,7 @@ export class Listing extends React.Component {
           title={"College Chart"}
           seriesData={collegeSeriesData}
           colors={colors}
-          sum={90}
+          sum={colleges.length}
         />
       </div>
     );

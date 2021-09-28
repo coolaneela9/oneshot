@@ -78,7 +78,7 @@
 
 .img-container {
   background-image: url(./app-background.jpeg);
-  height: 100%;
+  height: calc(100% - 80px);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -87,4 +87,20 @@
 .sidebar-col {
   max-width: 230px;
   z-index: 999;
+}
+
+.close-icon {
+  margin-top: 5px;
+  font-size: 20px;
+}
+.close-btn {
+  background: #000;
+  border: 0;
+  margin-top: 5px;
+  display: flex;
+  float: right;
+}
+
+.listing-modal .modal-dialog {
+  min-width: 100vw;
 }

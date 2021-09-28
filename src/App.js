@@ -8,7 +8,7 @@ import { Row, Col } from "react-bootstrap";
 class App extends React.Component {
   render() {
     return (
-      <div>
+      <div style={{ height: "100vh" }}>
         <nav className="navBar">
           <div className="h4" style={{ padding: "20px" }}>
             Oneshot
