@@ -58,26 +58,16 @@ const colors = [
   "#FF9ADC",
 ];
 
-// export const CollegeListing = () => {
-//   const [colleges, setColleges] = useState([]);
-//   useEffect(() => {
-//     const fetchCollegeList = () => {
-//       getColleges().then((res) => {
-//         setColleges(colleges.concat(res));
-//       });
-//     };
-//     fetchCollegeList();
-//   });
-// };
 export class Listing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       colleges: [],
+      students: [],
     };
   }
   componentDidMount() {
-    const { colleges } = this.state;
+    const { colleges, students } = this.state;
 
     // For showing all the colleges
     getColleges().then((res) => {
@@ -85,10 +75,16 @@ export class Listing extends React.Component {
         colleges: colleges.concat(res),
       });
     });
+
+    getStudents().then((res) => {
+      this.setState({
+        students: students.concat(res),
+      });
+    });
   }
 
   render() {
-    const { colleges } = this.state;
+    const { colleges, students } = this.state;
     const uniqueStates = _.uniq(_.map(colleges, "state"));
     let collegeChartData = [];
     let collegeSeriesData = [];
@@ -161,6 +157,8 @@ export class Listing extends React.Component {
           seriesData={collegeSeriesData}
           colors={colors}
           sum={colleges.length}
+          colleges={colleges}
+          students={students}
         />
       </div>
     );

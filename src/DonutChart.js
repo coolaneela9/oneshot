@@ -4,6 +4,7 @@ import _ from "lodash";
 import Highcharts from "highcharts";
 import Styled from "styled-components";
 import ListingModal from "./ListingModal";
+import { getCollegesByState } from "./api";
 require("highcharts-no-data-to-display")(Highcharts);
 
 const Div = Styled.div`
@@ -73,6 +74,7 @@ class DonutChart extends React.Component {
     this.state = {
       isOpenListingPopup: false,
       name: undefined,
+      collegesByState: [],
     };
 
     this.id = `donut_chart__${Math.floor(Math.random() * 1000)}`;
@@ -83,13 +85,22 @@ class DonutChart extends React.Component {
     this.renderChart();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { seriesData } = this.props;
+    const { collegesByState, name } = this.state;
     this.renderChart();
     if (!_.isEmpty(prevProps.seriesData) && !_.isEmpty(seriesData)) {
       if (prevProps.seriesData[0][1] !== seriesData[0][1]) {
         this.renderChart();
       }
+    }
+
+    if (prevState.name !== name && name) {
+      getCollegesByState(name).then((res) => {
+        this.setState({
+          collegesByState: [...collegesByState, ...res],
+        });
+      });
     }
   }
 
@@ -210,22 +221,12 @@ class DonutChart extends React.Component {
             },
           },
         },
-        // point: {
-        //   events: {
-        //     click: function () {
-        //       console.log(this.y);
-        //     },
-        //   },
-        // },
       },
       series: [
         {
           type: "pie",
           innerSize: "60%",
           data: seriesData,
-          onClick: function () {
-            console.log(this.y);
-          },
         },
       ],
       credits: false,
@@ -234,7 +235,9 @@ class DonutChart extends React.Component {
 
   render() {
     const { data, sum, colors } = this.props;
-    const { isOpenListingPopup, name } = this.state;
+    const { isOpenListingPopup, name, collegesByState } = this.state;
+    console.log(name, "name in donut");
+    console.log(collegesByState, "collegesByState");
     return (
       <React.Fragment>
         <div>Chart</div>
@@ -251,14 +254,16 @@ class DonutChart extends React.Component {
                 </Num>
                 <Text>{Math.round((key["count"] * 100) / sum) + "%"}</Text>
               </span>
-              <ListingModal
-                show={isOpenListingPopup}
-                name={name}
-                handleClose={this.handleCollegePopup}
-              />
             </div>
           ))}
         </LegendWrapper>
+        <ListingModal
+          show={isOpenListingPopup}
+          name={name}
+          handleClose={this.handleCollegePopup}
+          collegesByState={collegesByState}
+          {...this.props}
+        />
       </React.Fragment>
     );
   }

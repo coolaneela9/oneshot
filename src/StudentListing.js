@@ -125,36 +125,7 @@ export class StudentListing extends React.Component {
     return (
       <div className="dashboard-listing">
         <div>Showing the total list of the students here:</div>
-        <Card className="dashboard-card">
-          <Card.Header>Listing of Students</Card.Header>
-          <Card.Body>
-            <div className="dashboard-events-table">
-              <StyledTable className="w-100">
-                <thead className="thead-dark">
-                  <tr>
-                    {_.map(studentConfig, (config) => (
-                      <th>{config}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {_.map(students, (student) => (
-                    <tr key={student._id}>
-                      <td>{student.name}</td>
-                      <td>{student.yearOfBatch}</td>
-                      <td>{student.collegeId.name}</td>
-                      <td>
-                        {_.map(student.skills, (skill) => (
-                          <li>{skill}</li>
-                        ))}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </StyledTable>
-            </div>
-          </Card.Body>
-        </Card>
+        <StudentListTable students={students} />
         <DonutChart
           data={studentChartData}
           title={"College Chart"}
@@ -166,5 +137,40 @@ export class StudentListing extends React.Component {
     );
   }
 }
+
+export const StudentListTable = ({ students }) => (
+  <Card className="dashboard-card">
+    <Card.Header>
+      {students.length > 0 ? "Listing of Students" : "Student Details"}
+    </Card.Header>
+    <Card.Body>
+      <div className="dashboard-events-table">
+        <StyledTable className="w-100">
+          <thead className="thead-dark">
+            <tr>
+              {_.map(studentConfig, (config) => (
+                <th>{config}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {_.map(students, (student) => (
+              <tr key={student._id}>
+                <td>{student.name}</td>
+                <td>{student.yearOfBatch}</td>
+                <td>{student.collegeId && student.collegeId.name}</td>
+                <td>
+                  {_.map(student.skills, (skill) => (
+                    <li>{skill}</li>
+                  ))}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </StyledTable>
+      </div>
+    </Card.Body>
+  </Card>
+);
 
 export default StudentListing;

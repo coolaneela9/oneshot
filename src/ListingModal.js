@@ -1,10 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Modal } from "react-bootstrap";
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Modal,
+  Button,
+  Overlay,
+  Tooltip,
+  OverlayTrigger,
+  Popover,
+} from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import _ from "lodash";
 import Styled from "styled-components";
 import ChartListing from "./ChartListing";
 import { getColleges, getStudents, getCollegesByState } from "./api";
+import { StudentListTable } from "./StudentListing";
 
 const StyledTable = Styled.table`
   overflow-y: auto;
@@ -73,21 +81,56 @@ const colStyles = {
   },
 };
 
-const ChartListing1 = ({ name }) => {
-  const [collegesByState, setCollegesByState] = useState([]);
-  useEffect(() => {
-    const fetchList = () => {
-      getCollegesByState(name).then((res) => {
-        console.log(`res`, res);
-        setCollegesByState(
-          res && res.length > 0 ? collegesByState.concat(res) : []
-        );
-      });
-    };
-    fetchList();
-  }, name);
+const ChartListing1 = ({ name, students, collegesByState }) => {
+  const [show, setShow] = useState(false);
+  const [target, setTarget] = useState(null);
+  const ref = useRef(null);
+  const [studentDetail, setStudentDetail] = useState([]);
+  const [isShowStudentDetail, setShowStudentDetail] = useState(false);
+
+  const handleClick = (event) => {
+    setShow(!show);
+    setTarget(event.target);
+  };
+
+  const handleStudentDetail = (student) => {
+    setStudentDetail(studentDetail.concat(student));
+    setShowStudentDetail(true);
+  };
+
+  const renderViewBtnTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      Click to View Students List
+    </Tooltip>
+  );
+
+  // const usePrevious = (value) => {
+  //   const ref = useRef();
+  //   useEffect(() => {
+  //     ref.current = value;
+  //   }, [value]);
+  //   return ref.current;
+  // };
+
+  // const prevCollegesByState = usePrevious(collegesByState);
+  // useEffect(() => {
+  //   const fetchCollegesByState = async () => {
+  //     const data = await getCollegesByState(name);
+  //     // .then((res) => {
+  //     //   setCollegesByState(
+  //     //     res && res.length > 0 ? [...collegesByState, ...res] : []
+  //     //   );
+  //     // });
+  //     // setCollegesByState(
+  //     //   data && data.length > 0 ? [...collegesByState, ...data] : []
+  //     // );
+  //   };
+  //   fetchCollegesByState();
+  // }, []);
+  console.log(collegesByState, "collegesByState");
+
   return (
-    <div className="dashboard-listing">
+    <div className="dashboard-listing" ref={ref}>
       <Card className="dashboard-card">
         <Card.Header>{`Listing of Colleges by State ${name}`}</Card.Header>
         <Card.Body>
@@ -110,6 +153,35 @@ const ChartListing1 = ({ name }) => {
                     <td style={colStyles.country}>{college.country}</td>
                     <td style={colStyles.studentsCount}>
                       {college.noOfStudents}
+                      <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={renderViewBtnTooltip}
+                      >
+                        <Button variant="primary" onClick={handleClick}>
+                          View
+                        </Button>
+                      </OverlayTrigger>
+                      <Overlay
+                        show={show}
+                        target={target}
+                        placement="bottom"
+                        container={ref}
+                        containerPadding={20}
+                      >
+                        <Popover id="popover-contained">
+                          <Popover.Header as="h3">Students</Popover.Header>
+                          <Popover.Body>
+                            {_.map(students, (student) => {
+                              return (
+                                <div onClick={handleStudentDetail(student)}>
+                                  {student.name}
+                                </div>
+                              );
+                            })}
+                          </Popover.Body>
+                        </Popover>
+                      </Overlay>
                     </td>
                     <td style={colStyles.courses}>
                       {_.map(college.courses, (course) => (
@@ -123,11 +195,45 @@ const ChartListing1 = ({ name }) => {
           </div>
         </Card.Body>
       </Card>
+      <StudentDetailModal
+        show={isShowStudentDetail}
+        studentDetail={studentDetail}
+        // close={setShowStudentDetail(!isShowStudentDetail)}
+      />
     </div>
   );
 };
 
-export const ListingModal = ({ show, handleClose, name }) => {
+export const StudentDetailModal = (show, studentDetail) => {
+  return (
+    <Modal show={show} className="listing-modal">
+      <Modal.Body>
+        <div className="pull-right">
+          <button
+            className="close-btn pull-right"
+            onClick={(e) => {
+              e.preventDefault();
+              // close();
+            }}
+            role="button"
+          >
+            <span className="icon-cross" />
+          </button>
+        </div>
+        <StudentListTable students={studentDetail} />
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+export const ListingModal = ({
+  show,
+  handleClose,
+  name,
+  students,
+  collegesByState,
+}) => {
+  console.log(collegesByState, "listing modal cls");
   return (
     <Modal show={show} className="listing-modal">
       <Modal.Body>
@@ -143,7 +249,11 @@ export const ListingModal = ({ show, handleClose, name }) => {
             <span className="icon-cross" />
           </button>
         </div>
-        <ChartListing1 name={name} />
+        <ChartListing1
+          name={name}
+          students={students}
+          collegesByState={collegesByState}
+        />
       </Modal.Body>
     </Modal>
   );
