@@ -1,5 +1,3 @@
-import axios from "axios";
-
 export const getColleges = () => {
   return fetch("http://localhost:8000/colleges")
     .then((res) => res.json())
@@ -44,28 +42,6 @@ export const getCollegesByCourseName = (courseName) => {
     })
     .catch((err) => console.log(err, "err"));
 };
-
-// export async function getCollegesByCourseName(courseName) {
-//   const response = await fetch(
-//     `http://localhost:8000/colleges/getByCourse/${courseName}`
-//   );
-//   const collegesByState = await response.json();
-//   console.log(`collegesByState`, collegesByState);
-
-//   return collegesByState;
-// }
-
-// export async function getCollegesByCourseName(courseName) {
-//   const data = await axios
-//     .get(`http://localhost:8000/colleges/getByCourse/${courseName}`)
-//     .then((promise) => {
-//       return promise.data;
-//     })
-//     .catch((e) => {
-//       console.error(e);
-//     });
-//   return data;
-// }
 
 export const getStudentsByCollege = (collegeId) => {
   return fetch(`http://localhost:8000/students/${collegeId}`)

@@ -2,8 +2,6 @@ import React from "react";
 import "./App.scss";
 import Listing from "./Listing";
 import chanakyaImg from "./chanakya.jpeg";
-import SideBar from "./SideBar";
-import { Row, Col } from "react-bootstrap";
 import StudentListing from "./StudentListing";
 
 class App extends React.Component {
@@ -26,21 +24,11 @@ class App extends React.Component {
               </div>
               <div className="candidate-intro">
                 <div>Chanakya Chandra</div>
-                <div>Mechanical Engineer, IIT Madras</div>
+                <div>IIT Madras</div>
               </div>
             </div>
           </div>
         </nav>
-        {/* <div className="img-container">
-          <div className="row no-gutters">
-            <div className="sidebar-col col d-none d-xl-block">
-              <SideBar />
-            </div>
-            <div className="main-col col px-3">
-              <Listing />
-            </div>
-          </div>
-        </div> */}
         <div className="img-container">
           <Listing />
           <StudentListing />

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import _ from "lodash";
 import Styled from "styled-components";
 import DonutChart from "./DonutChart";
 import { getColleges, getStudents } from "./api";
-import { leastIndex } from "d3-array";
 
 const StyledTable = Styled.table`
   overflow-y: auto;
@@ -86,7 +85,7 @@ export class StudentListing extends React.Component {
     });
   }
   componentDidUpdate(prevProps, prevState) {
-    const { students, studentsData, uniqueCourses, colleges } = this.state;
+    const { students, studentsData, colleges } = this.state;
     if (prevState.students !== students && students) {
       let uniqueCourses = [];
 
@@ -119,8 +118,11 @@ export class StudentListing extends React.Component {
 
     return (
       <div className="dashboard-listing">
-        <div>Showing the total list of the students here:</div>
+        <div className="heading">
+          Showing the total list of the students here:
+        </div>
         <StudentListTable students={students} />
+        <div className="heading">Courses Chart:</div>
         <DonutChart
           data={courseChartData}
           title={"Courses Chart"}

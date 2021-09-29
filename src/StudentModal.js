@@ -19,14 +19,17 @@ export const StudentModal = ({ show, collegeId, close }) => {
     <div>
       <Modal show={show} className="listing-modal">
         <Modal.Body>
-          <CloseButton
-            onClick={(e) => {
-              e.preventDefault();
-              close();
-            }}
-          />
-
-          <StudentListTable students={students} />
+          <div className="pull-right">
+            <CloseButton
+              onClick={(e) => {
+                e.preventDefault();
+                close();
+              }}
+            />
+          </div>
+          <div className="dashboard-listing">
+            <StudentListTable students={students} />
+          </div>
         </Modal.Body>
       </Modal>
     </div>

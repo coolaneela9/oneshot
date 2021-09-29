@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Button } from "react-bootstrap";
+import React from "react";
+import { Modal, Button, CloseButton } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import _ from "lodash";
 import Styled from "styled-components";
-import { getColleges, getStudents, getCollegesByState } from "./api";
-import { StudentListTable } from "./StudentListing";
 import StudentModal from "./StudentModal";
 
 const StyledTable = Styled.table`
@@ -81,8 +79,6 @@ class ChartListing1 extends React.Component {
       showStudentPopup: false,
     };
   }
-  // const [showStudentPopup, setShowStudentPopup] = useState(false);
-  // const [collegeSelected, setCollegeSelected] = useState(null);
 
   handleStudentPopup = (college) => {
     this.setState({
@@ -164,16 +160,12 @@ export const ListingModal = ({ show, handleClose, name, collegesByState }) => {
     <Modal show={show} className="listing-modal">
       <Modal.Body>
         <div className="pull-right">
-          <button
-            className="close-btn pull-right"
+          <CloseButton
             onClick={(e) => {
               e.preventDefault();
               handleClose();
             }}
-            role="button"
-          >
-            <span className="icon-cross" />
-          </button>
+          />
         </div>
         {name && (
           <ChartListing1 name={name} collegesByState={collegesByState} />

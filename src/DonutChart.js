@@ -243,7 +243,6 @@ class DonutChart extends React.Component {
 
     return (
       <React.Fragment>
-        <div>Chart</div>
         <Div>
           <div id={this.id} />
         </Div>

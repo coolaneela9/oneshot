@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Card from "react-bootstrap/Card";
 import _ from "lodash";
 import Styled from "styled-components";
@@ -96,7 +96,6 @@ export class Listing extends React.Component {
       //   count: 30,
       // };
       // getCollegesByState(uniqueStates[i]).then((data) => {
-      //   console.log(data, "data");
       //   collegeData.count = data.length;
       // });
       collegeChartData.push({
@@ -116,7 +115,9 @@ export class Listing extends React.Component {
 
     return (
       <div className="dashboard-listing">
-        <div>Showing the total list of the colleges here:</div>
+        <div className="heading">
+          Showing the total list of the colleges here:
+        </div>
         <Card className="dashboard-card">
           <Card.Header>Listing of Colleges</Card.Header>
           <Card.Body>
@@ -150,6 +151,11 @@ export class Listing extends React.Component {
             </div>
           </Card.Body>
         </Card>
+        <div className="heading">College Chart:</div>
+        <div className="sub-heading">
+          Click on the particular item to show the list of colleges for that
+          particular State
+        </div>
         <DonutChart
           data={collegeChartData}
           title={"College Chart"}
