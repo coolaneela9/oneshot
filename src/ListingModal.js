@@ -4,6 +4,7 @@ import Card from "react-bootstrap/Card";
 import _ from "lodash";
 import Styled from "styled-components";
 import StudentModal from "./StudentModal";
+import SimilarCollegesModal from "./SimilarCollegesModal";
 
 const StyledTable = Styled.table`
   overflow-y: auto;
@@ -72,11 +73,13 @@ const colStyles = {
   },
 };
 
-class ChartListing1 extends React.Component {
+class ChartListing extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showStudentPopup: false,
+      showSimilarCollegesPopup: false,
+      similarCollegesList: [],
     };
   }
 
@@ -93,13 +96,42 @@ class ChartListing1 extends React.Component {
     });
   };
 
+  handleSimilarCollegesPopup = (ourRequiredcollege) => {
+    const { colleges } = this.props;
+    const { similarCollegesList } = this.state;
+    let similiarColleges = [];
+    for (let i = 0; i < ourRequiredcollege.courses.length; i++) {
+      similiarColleges = similiarColleges.concat(
+        _.filter(colleges, (college) =>
+          _.includes(college.courses, ourRequiredcollege.courses[i])
+        )
+      );
+    }
+
+    this.setState({
+      showSimilarCollegesPopup: true,
+      similarCollegesList: similarCollegesList.concat(similiarColleges),
+    });
+  };
+
+  closeSimilarCollegePopupClose = () => {
+    this.setState({
+      showSimilarCollegesPopup: false,
+    });
+  };
+
   render() {
     const { name, collegesByState } = this.props;
-    const { showStudentPopup, collegeSelected } = this.state;
+    const {
+      showStudentPopup,
+      collegeSelected,
+      similarCollegesList,
+      showSimilarCollegesPopup,
+    } = this.state;
     return (
       <div className="dashboard-listing">
         <Card className="dashboard-card">
-          <Card.Header>{`Listing of Colleges by State ${name}`}</Card.Header>
+          <Card.Header>{` by State ${name}`}</Card.Header>
           <Card.Body>
             <div className="dashboard-events-table">
               <StyledTable className="w-100">
@@ -108,6 +140,7 @@ class ChartListing1 extends React.Component {
                     {_.map(collegeConfig, (config, i) => (
                       <th key={i}>{config}</th>
                     ))}
+                    <th>Similar Colleges</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -121,7 +154,9 @@ class ChartListing1 extends React.Component {
                       <td style={colStyles.state}>{college.state}</td>
                       <td style={colStyles.country}>{college.country}</td>
                       <td style={colStyles.studentsCount}>
-                        {college.noOfStudents}
+                        <span className="students-counts">
+                          {college.noOfStudents}
+                        </span>
                         <Button
                           className="view-btn"
                           onClick={(e) => {
@@ -137,6 +172,16 @@ class ChartListing1 extends React.Component {
                           <li key={i}>{course}</li>
                         ))}
                       </td>
+                      <td>
+                        <Button
+                          onClick={(e) => {
+                            e.preventDefault();
+                            this.handleSimilarCollegesPopup(college);
+                          }}
+                        >
+                          colleges
+                        </Button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -149,12 +194,23 @@ class ChartListing1 extends React.Component {
           collegeId={collegeSelected && collegeSelected._id}
           close={this.closeStudentPopup}
         />
+        <SimilarCollegesModal
+          show={showSimilarCollegesPopup}
+          list={similarCollegesList}
+          close={this.closeSimilarCollegePopupClose}
+        />
       </div>
     );
   }
 }
 
-export const ListingModal = ({ show, handleClose, name, collegesByState }) => {
+export const ListingModal = ({
+  show,
+  handleClose,
+  name,
+  collegesByState,
+  colleges,
+}) => {
   if (!show) return null;
   return (
     <Modal show={show} className="listing-modal">
@@ -168,7 +224,11 @@ export const ListingModal = ({ show, handleClose, name, collegesByState }) => {
           />
         </div>
         {name && (
-          <ChartListing1 name={name} collegesByState={collegesByState} />
+          <ChartListing
+            name={name}
+            collegesByState={collegesByState}
+            colleges={colleges}
+          />
         )}
       </Modal.Body>
     </Modal>

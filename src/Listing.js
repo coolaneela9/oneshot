@@ -3,9 +3,9 @@ import Card from "react-bootstrap/Card";
 import _ from "lodash";
 import Styled from "styled-components";
 import DonutChart from "./DonutChart";
-import { getColleges, getStudents, getCollegesByState } from "./api";
+import { getColleges, getStudents } from "./api";
 
-const StyledTable = Styled.table`
+export const StyledCollegeTable = Styled.table`
   overflow-y: auto;
   max-height: 300px;
   border-spacing: 0 16px;
@@ -34,7 +34,7 @@ const StyledTable = Styled.table`
   }
 `;
 
-const collegeConfig = [
+export const collegeConfig = [
   "Name",
   "Year founded",
   "City",
@@ -89,40 +89,32 @@ export class Listing extends React.Component {
     let collegeChartData = [];
     let collegeSeriesData = [];
 
-    //have to use the api in the count part
     for (let i = 0; i < uniqueStates.length; i++) {
-      // let collegeData = {
-      //   name: uniqueStates[i],
-      //   count: 30,
-      // };
-      // getCollegesByState(uniqueStates[i]).then((data) => {
-      //   collegeData.count = data.length;
-      // });
       collegeChartData.push({
         name: uniqueStates[i],
-        count: "30",
-        // count: await getCollegesByState(uniqueStates[i]),
-        // // .then((data) => {
-        // //   console.log(`data.length`, data.length);
-        // //   return data.length;
-        // // }),
+        count: _.filter(
+          colleges,
+          (college) => college.state === uniqueStates[i]
+        ).length,
       });
     }
 
     for (let i = 0; i < uniqueStates.length; i++) {
-      collegeSeriesData.push([uniqueStates[i], 30]);
+      collegeSeriesData.push([
+        uniqueStates[i],
+        _.filter(colleges, (college) => college.state === uniqueStates[i])
+          .length,
+      ]);
     }
 
     return (
       <div className="dashboard-listing">
-        <div className="heading">
-          Showing the total list of the colleges here:
-        </div>
+        <div className="heading">List of Colleges:</div>
         <Card className="dashboard-card">
-          <Card.Header>Listing of Colleges</Card.Header>
+          <Card.Header>Colleges</Card.Header>
           <Card.Body>
             <div className="dashboard-events-table">
-              <StyledTable className="w-100">
+              <StyledCollegeTable className="w-100">
                 <thead className="thead-dark">
                   <tr>
                     {_.map(collegeConfig, (config, i) => (
@@ -147,7 +139,7 @@ export class Listing extends React.Component {
                     </tr>
                   ))}
                 </tbody>
-              </StyledTable>
+              </StyledCollegeTable>
             </div>
           </Card.Body>
         </Card>

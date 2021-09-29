@@ -34,7 +34,10 @@ const StyledTable = Styled.table`
   }
 `;
 
-const studentConfig = ["Name", "Year of batch", "College Name", "Skills"];
+const studentConfig = (showCollegeName) =>
+  showCollegeName
+    ? ["Name", "Year of batch", "College Name", "Skills"]
+    : ["Name", "Year of batch", "Skills"];
 
 const colors = [
   "#E5E9FC",
@@ -68,15 +71,18 @@ export class StudentListing extends React.Component {
     this.setState({
       isFetchingStudents: true,
     });
+
     getStudents().then((res) => {
       this.setState({
         students: students.concat(res),
         isFetchingStudents: false,
       });
     });
+
     this.setState({
       isFetchingColleges: true,
     });
+
     getColleges().then((res) => {
       this.setState({
         colleges: colleges.concat(res),
@@ -85,7 +91,7 @@ export class StudentListing extends React.Component {
     });
   }
   componentDidUpdate(prevProps, prevState) {
-    const { students, studentsData, colleges } = this.state;
+    const { students, colleges } = this.state;
     if (prevState.students !== students && students) {
       let uniqueCourses = [];
 
@@ -99,36 +105,40 @@ export class StudentListing extends React.Component {
     }
   }
   render() {
-    const { students, uniqueCourses } = this.state;
+    const { students, uniqueCourses, colleges } = this.state;
 
     let courseChartData = [];
     let courseSeriesData = [];
 
-    //have to use the api in the count part
     for (let i = 0; i < uniqueCourses.length; i++) {
       courseChartData.push({
         name: uniqueCourses[i],
-        count: "30",
+        count: _.filter(colleges, (college) =>
+          _.includes(college.courses, uniqueCourses[i])
+        ).length,
       });
     }
 
     for (let i = 0; i < uniqueCourses.length; i++) {
-      courseSeriesData.push([uniqueCourses[i], 30]);
+      courseSeriesData.push([
+        uniqueCourses[i],
+        _.filter(colleges, (college) =>
+          _.includes(college.courses, uniqueCourses[i])
+        ).length,
+      ]);
     }
 
     return (
       <div className="dashboard-listing">
-        <div className="heading">
-          Showing the total list of the students here:
-        </div>
-        <StudentListTable students={students} />
+        <div className="heading">List of Students:</div>
+        <StudentListTable students={students} showCollegeName={true} />
         <div className="heading">Courses Chart:</div>
         <DonutChart
           data={courseChartData}
           title={"Courses Chart"}
           seriesData={courseSeriesData}
           colors={colors}
-          sum={students.length}
+          sum={colleges.length}
           chartName={"courses_chart"}
         />
       </div>
@@ -136,39 +146,43 @@ export class StudentListing extends React.Component {
   }
 }
 
-export const StudentListTable = ({ students }) => (
-  <Card className="dashboard-card">
-    <Card.Header>
-      {students.length > 0 ? "Listing of Students" : "Student Details"}
-    </Card.Header>
-    <Card.Body>
-      <div className="dashboard-events-table">
-        <StyledTable className="w-100">
-          <thead className="thead-dark">
-            <tr>
-              {_.map(studentConfig, (config, i) => (
-                <th key={i}>{config}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {_.map(students, (student, i) => (
-              <tr key={i}>
-                <td>{student.name}</td>
-                <td>{student.yearOfBatch}</td>
-                <td>{student.collegeId && student.collegeId.name}</td>
-                <td>
-                  {_.map(student.skills, (skill, i) => (
-                    <li key={i}>{skill}</li>
-                  ))}
-                </td>
+export const StudentListTable = ({ students, showCollegeName }) => {
+  return (
+    <Card className="dashboard-card">
+      <Card.Header>
+        {students.length > 0 ? "Students" : "Student Details"}
+      </Card.Header>
+      <Card.Body>
+        <div className="dashboard-events-table">
+          <StyledTable className="w-100">
+            <thead className="thead-dark">
+              <tr>
+                {_.map(studentConfig(showCollegeName), (config, i) => (
+                  <th key={i}>{config}</th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </StyledTable>
-      </div>
-    </Card.Body>
-  </Card>
-);
+            </thead>
+            <tbody>
+              {_.map(students, (student, i) => (
+                <tr key={i}>
+                  <td>{student.name}</td>
+                  <td>{student.yearOfBatch}</td>
+                  {showCollegeName && (
+                    <td>{student.collegeId && student.collegeId.name}</td>
+                  )}
+                  <td>
+                    {_.map(student.skills, (skill, i) => (
+                      <li key={i}>{skill}</li>
+                    ))}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </StyledTable>
+        </div>
+      </Card.Body>
+    </Card>
+  );
+};
 
 export default StudentListing;

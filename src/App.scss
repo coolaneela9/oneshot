@@ -24,7 +24,7 @@
 }
 
 .card-body {
-  height: 300px;
+  height: 400px;
   overflow: auto;
 }
 
@@ -62,8 +62,13 @@
   min-width: 100vw;
 }
 
+.student-modal .modal-dialog {
+  min-width: 60vw;
+}
+
 .view-btn {
   margin-left: 10px;
+  float: right;
 }
 
 .pull-right {

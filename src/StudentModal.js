@@ -7,9 +7,11 @@ export const StudentModal = ({ show, collegeId, close }) => {
   const [students, setStudents] = useState([]);
   useEffect(() => {
     const fetchStudentList = () => {
-      getStudentsByCollege(collegeId).then((res) => {
-        setStudents([...students, ...res]);
-      });
+      if (collegeId) {
+        getStudentsByCollege(collegeId).then((res) => {
+          setStudents(students.concat(res));
+        });
+      }
     };
     fetchStudentList();
   }, [collegeId]);
@@ -17,7 +19,7 @@ export const StudentModal = ({ show, collegeId, close }) => {
   if (!show) return null;
   return (
     <div>
-      <Modal show={show} className="listing-modal">
+      <Modal show={show} className="student-modal">
         <Modal.Body>
           <div className="pull-right">
             <CloseButton
@@ -28,7 +30,7 @@ export const StudentModal = ({ show, collegeId, close }) => {
             />
           </div>
           <div className="dashboard-listing">
-            <StudentListTable students={students} />
+            <StudentListTable students={students} showCollegeName={false} />
           </div>
         </Modal.Body>
       </Modal>
