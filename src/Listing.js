@@ -143,10 +143,9 @@ export class Listing extends React.Component {
             </div>
           </Card.Body>
         </Card>
-        <div className="heading">College Chart:</div>
+        <div className="heading college-chart-heading">College Chart:</div>
         <div className="sub-heading">
-          Click on the particular item to show the list of colleges for that
-          particular State
+          Click on any state to view the list of colleges
         </div>
         <DonutChart
           data={collegeChartData}
