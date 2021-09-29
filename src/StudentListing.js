@@ -3,12 +3,7 @@ import Card from "react-bootstrap/Card";
 import _ from "lodash";
 import Styled from "styled-components";
 import DonutChart from "./DonutChart";
-import {
-  getColleges,
-  getStudents,
-  getCollegesByState,
-  getCollegeById,
-} from "./api";
+import { getColleges, getStudents } from "./api";
 import { leastIndex } from "d3-array";
 
 const StyledTable = Styled.table`
@@ -107,19 +102,19 @@ export class StudentListing extends React.Component {
   render() {
     const { students, uniqueCourses } = this.state;
 
-    let studentChartData = [];
-    let studentSeriesData = [];
+    let courseChartData = [];
+    let courseSeriesData = [];
 
     //have to use the api in the count part
     for (let i = 0; i < uniqueCourses.length; i++) {
-      studentChartData.push({
+      courseChartData.push({
         name: uniqueCourses[i],
         count: "30",
       });
     }
 
     for (let i = 0; i < uniqueCourses.length; i++) {
-      studentSeriesData.push([uniqueCourses[i], 30]);
+      courseSeriesData.push([uniqueCourses[i], 30]);
     }
 
     return (
@@ -127,11 +122,12 @@ export class StudentListing extends React.Component {
         <div>Showing the total list of the students here:</div>
         <StudentListTable students={students} />
         <DonutChart
-          data={studentChartData}
-          title={"College Chart"}
-          seriesData={studentSeriesData}
+          data={courseChartData}
+          title={"Courses Chart"}
+          seriesData={courseSeriesData}
           colors={colors}
           sum={students.length}
+          chartName={"courses_chart"}
         />
       </div>
     );
@@ -148,20 +144,20 @@ export const StudentListTable = ({ students }) => (
         <StyledTable className="w-100">
           <thead className="thead-dark">
             <tr>
-              {_.map(studentConfig, (config) => (
-                <th>{config}</th>
+              {_.map(studentConfig, (config, i) => (
+                <th key={i}>{config}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {_.map(students, (student) => (
-              <tr key={student._id}>
+            {_.map(students, (student, i) => (
+              <tr key={i}>
                 <td>{student.name}</td>
                 <td>{student.yearOfBatch}</td>
                 <td>{student.collegeId && student.collegeId.name}</td>
                 <td>
-                  {_.map(student.skills, (skill) => (
-                    <li>{skill}</li>
+                  {_.map(student.skills, (skill, i) => (
+                    <li key={i}>{skill}</li>
                   ))}
                 </td>
               </tr>

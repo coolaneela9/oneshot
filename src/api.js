@@ -66,3 +66,12 @@ export const getCollegesByCourseName = (courseName) => {
 //     });
 //   return data;
 // }
+
+export const getStudentsByCollege = (collegeId) => {
+  return fetch(`http://localhost:8000/students/${collegeId}`)
+    .then((res) => res.json())
+    .then((data) => {
+      return data;
+    })
+    .catch((err) => console.log(err, "err"));
+};

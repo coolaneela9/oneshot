@@ -18,7 +18,7 @@ const Div = Styled.div`
     z-index: 99999 !important;
   }
   span.highcharts-title  {
-    top: 110px;
+    top: 110px !important;
     z-index: 1 !important;
   }
   svg.highcharts-root {
@@ -75,10 +75,10 @@ class DonutChart extends React.Component {
       isOpenListingPopup: false,
       name: undefined,
       collegesByState: [],
+      isFetchingCollegesByState: false,
     };
 
     this.id = `donut_chart__${Math.floor(Math.random() * 1000)}`;
-    this.handleCollegePopup = this.handleCollegePopup.bind(this);
   }
 
   componentDidMount() {
@@ -87,27 +87,26 @@ class DonutChart extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { seriesData } = this.props;
-    const { collegesByState, name } = this.state;
     this.renderChart();
     if (!_.isEmpty(prevProps.seriesData) && !_.isEmpty(seriesData)) {
       if (prevProps.seriesData[0][1] !== seriesData[0][1]) {
         this.renderChart();
       }
     }
-
-    if (prevState.name !== name && name) {
-      getCollegesByState(name).then((res) => {
-        this.setState({
-          collegesByState: [...collegesByState, ...res],
-        });
-      });
-    }
   }
 
   handleCollegePopup = (name) => {
+    const { collegesByState } = this.state;
     this.setState({
-      isOpenListingPopup: !this.state.isOpenListingPopup,
-      name: name,
+      isFetchingCollegesByState: true,
+    });
+    getCollegesByState(name).then((res) => {
+      this.setState({
+        collegesByState: [...collegesByState, ...res],
+        isOpenListingPopup: !this.state.isOpenListingPopup,
+        name: name,
+        isFetchingCollegesByState: false,
+      });
     });
   };
 
@@ -234,10 +233,14 @@ class DonutChart extends React.Component {
   }
 
   render() {
-    const { data, sum, colors } = this.props;
-    const { isOpenListingPopup, name, collegesByState } = this.state;
-    console.log(name, "name in donut");
-    console.log(collegesByState, "collegesByState");
+    const { data, sum, colors, chartName } = this.props;
+    const {
+      isOpenListingPopup,
+      name,
+      collegesByState,
+      isFetchingCollegesByState,
+    } = this.state;
+
     return (
       <React.Fragment>
         <div>Chart</div>
@@ -249,7 +252,13 @@ class DonutChart extends React.Component {
             <div className="legend-wrapper" key={i}>
               <Marker style={{ borderColor: colors[i] }} />
               <span className="d-flex ml-2">
-                <Num onClick={() => this.handleCollegePopup(key["name"])}>
+                <Num
+                  onClick={() =>
+                    chartName === "college_chart"
+                      ? this.handleCollegePopup(key["name"])
+                      : null
+                  }
+                >
                   {key["name"]}
                 </Num>
                 <Text>{Math.round((key["count"] * 100) / sum) + "%"}</Text>
@@ -257,13 +266,15 @@ class DonutChart extends React.Component {
             </div>
           ))}
         </LegendWrapper>
-        <ListingModal
-          show={isOpenListingPopup}
-          name={name}
-          handleClose={this.handleCollegePopup}
-          collegesByState={collegesByState}
-          {...this.props}
-        />
+        {!isFetchingCollegesByState && (
+          <ListingModal
+            show={isOpenListingPopup}
+            name={name}
+            handleClose={this.handleCollegePopup}
+            collegesByState={collegesByState}
+            {...this.props}
+          />
+        )}
       </React.Fragment>
     );
   }

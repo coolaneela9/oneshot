@@ -113,7 +113,6 @@ export class Listing extends React.Component {
     for (let i = 0; i < uniqueStates.length; i++) {
       collegeSeriesData.push([uniqueStates[i], 30]);
     }
-    console.log(collegeChartData, "collegeChartData");
 
     return (
       <div className="dashboard-listing">
@@ -125,8 +124,8 @@ export class Listing extends React.Component {
               <StyledTable className="w-100">
                 <thead className="thead-dark">
                   <tr>
-                    {_.map(collegeConfig, (config) => (
-                      <th>{config}</th>
+                    {_.map(collegeConfig, (config, i) => (
+                      <th key={i}>{config}</th>
                     ))}
                   </tr>
                 </thead>
@@ -140,8 +139,8 @@ export class Listing extends React.Component {
                       <td>{college.country}</td>
                       <td>{college.noOfStudents}</td>
                       <td>
-                        {_.map(college.courses, (course) => (
-                          <li>{course}</li>
+                        {_.map(college.courses, (course, i) => (
+                          <li key={i}>{course}</li>
                         ))}
                       </td>
                     </tr>
@@ -159,6 +158,7 @@ export class Listing extends React.Component {
           sum={colleges.length}
           colleges={colleges}
           students={students}
+          chartName={"college_chart"}
         />
       </div>
     );
