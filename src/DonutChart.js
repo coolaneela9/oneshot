@@ -54,7 +54,7 @@ const LegendWrapper = Styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px 10px;
+    padding: 30px 40px;
     .legend-wrapper {
         display: flex;
         padding: 4px;
@@ -243,28 +243,30 @@ class DonutChart extends React.Component {
 
     return (
       <React.Fragment>
-        <Div>
-          <div id={this.id} />
-        </Div>
-        <LegendWrapper>
-          {_.map(data, (key, i) => (
-            <div className="legend-wrapper" key={i}>
-              <Marker style={{ borderColor: colors[i] }} />
-              <span className="d-flex ml-2">
-                <Num
-                  onClick={() =>
-                    chartName === "college_chart"
-                      ? this.handleCollegePopup(key["name"])
-                      : null
-                  }
-                >
-                  {key["name"]}
-                </Num>
-                <Text>{Math.round((key["count"] * 100) / sum) + "%"}</Text>
-              </span>
-            </div>
-          ))}
-        </LegendWrapper>
+        <div className="donut-chart">
+          <Div>
+            <div id={this.id} />
+          </Div>
+          <LegendWrapper>
+            {_.map(data, (key, i) => (
+              <div className="legend-wrapper" key={i}>
+                <Marker style={{ borderColor: colors[i] }} />
+                <span className="d-flex ml-2">
+                  <Num
+                    onClick={() =>
+                      chartName === "college_chart"
+                        ? this.handleCollegePopup(key["name"])
+                        : null
+                    }
+                  >
+                    {key["name"]}
+                  </Num>
+                  <Text>{Math.round((key["count"] * 100) / sum) + "%"}</Text>
+                </span>
+              </div>
+            ))}
+          </LegendWrapper>
+        </div>
         {!isFetchingCollegesByState && (
           <ListingModal
             show={isOpenListingPopup}
